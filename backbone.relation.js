@@ -1,9 +1,9 @@
 /**
- * Backbone.Relation.js 0.1.0
+ * Backbone.Relation.js 0.1.1
  * (c) 2014 Gonzalo Santomé (https://github.com/gsantome/Backbone.Relation)
  *
  * Backbone.Relation may be freely distributed under the MIT license; see the accompanying LICENSE.txt.
- * For details and documentation: https://github.com/PaulUithol/Backbone-relational.
+ * For details and documentation: https://github.com/gsantome/Backbone.Relation.
  * Depends on Backbone (and thus on Underscore as well): https://github.com/documentcloud/backbone.
  *
  * Example:
@@ -122,15 +122,23 @@
 				var Clazz = relation.model || relation.collection;
 				
 				/*
-				* Sometime circular dependency get the object on undefined. So we are loading here.
+				* Sometime circular dependency get the object = undefined. So we are loading here.
 				*/
 				if( !Clazz ) { 
-					Clazz = require(relation.path)
+					Clazz = require(relation.path);
 				}
 
 				if( !(response[relation.key] instanceof Backbone.Collection) && !(response[relation.key] instanceof Backbone.Model) ) {
-				
-					var objectz = new Clazz(response[relation.key]);
+						
+					var objectz;
+					
+					if( response[relation.key] instanceof Backbone.Collection ) {
+						objectz = new Clazz();
+						objectz.reactReset(response[relation.key]);
+					}
+					else {
+						objectz = new Clazz(response[relation.key]);
+					}
 
 					this.set(relation.key, objectz);
 
